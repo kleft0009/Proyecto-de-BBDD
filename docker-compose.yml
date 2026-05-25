@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  coordinator:
+    image: citusdata/citus:11.2
+    container_name: coordinator
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      # ESTA LÍNEA ES LA MAGIA: Mapea tu carpeta local con el script al contenedor
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - ecommerce_net
+
+  worker1:
+    image: citusdata/citus:11.2
+    container_name: worker1
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - ecommerce_net
+
+  worker2:
+    image: citusdata/citus:11.2
+    container_name: worker2
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - ecommerce_net
+
+  worker3:
+    image: citusdata/citus:11.2
+    container_name: worker3
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - ecommerce_net
+
+  worker4:
+    image: citusdata/citus:11.2
+    container_name: worker4
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - ecommerce_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    networks:
+      - ecommerce_net
+
+networks:
+  ecommerce_net:
+    external: true
+    name: ecommerce_net
