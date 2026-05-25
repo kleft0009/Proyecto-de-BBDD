@@ -61,3 +61,19 @@ CREATE TABLE PedidoDetalle (
     producto_id INT NOT NULL,
     PRIMARY KEY (id, pedido_id) -- Clave compuesta vital para que Citus almacene el detalle junto al pedido
 );
+
+ALTER TABLE Producto 
+ADD CONSTRAINT fk_producto_proveedor 
+FOREIGN KEY (proveedor_id) REFERENCES Proveedor(id) ON DELETE SET NULL;
+
+ALTER TABLE Inventario 
+ADD CONSTRAINT fk_inventario_producto 
+FOREIGN KEY (producto_id) REFERENCES Producto(id) ON DELETE CASCADE;
+
+ALTER TABLE PedidoDetalle 
+ADD CONSTRAINT fk_detalle_pedido 
+FOREIGN KEY (pedido_id) REFERENCES Pedido(id) ON DELETE CASCADE;
+
+ALTER TABLE PedidoDetalle 
+ADD CONSTRAINT fk_detalle_producto 
+FOREIGN KEY (producto_id) REFERENCES Producto(id);
