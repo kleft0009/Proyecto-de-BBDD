@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   coordinator:
     image: citusdata/citus:11.2
@@ -7,10 +5,8 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
-    volumes:
-      # ESTA LÍNEA ES LA MAGIA: Mapea tu carpeta local con el script al contenedor
-      - ./init-scripts:/docker-entrypoint-initdb.d
+      - "9000:5432"
+
     networks:
       - ecommerce_net
 
@@ -53,7 +49,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8080:80"
+      - "9005:80"
     networks:
       - ecommerce_net
 
