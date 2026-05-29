@@ -1,4 +1,5 @@
 services:
+  
   coordinator:
     image: citusdata/citus:11.2
     container_name: coordinator
@@ -52,7 +53,33 @@ services:
       - "9005:80"
     networks:
       - ecommerce_net
-
+  backend:
+    container_name: backend
+    image: back_end:3.9.4
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      PORT: 3000
+      DB_HOST: coordinator
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_SCHEMA: public
+      DEFAULT_LIMIT: 100
+      MAX_LIMIT: 1000
+    networks:
+      - ecommerce_net
+  frontend:
+    container_name: frontend
+    image: criowl/front_mirage:2.0
+    ports:
+      - "9009:80"
+    environment:
+      VITE_API_URL: http://localhost:3000
+    networks:
+      - ecommerce_net
+      
 networks:
   ecommerce_net:
     external: true
