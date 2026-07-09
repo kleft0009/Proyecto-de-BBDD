@@ -95,7 +95,7 @@ async def main():
     
     async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
         tasks = []
-        for idx in range(1, 500001):
+        for idx in range(1, 250001):
             tasks.append(send_persona(session, semaphore, idx, progress_state))
             
         print("Registrando 500,000 tareas... Esto puede tomar unos segundos...")

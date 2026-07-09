@@ -112,3 +112,8 @@ CREATE TABLE PedidoDetalle (
     FOREIGN KEY (pedido_id, cliente_id)  REFERENCES Pedido(id, cliente_id)  ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES Producto(id)  ON DELETE RESTRICT
 );
+
+
+EXPLAIN ANALYZE
+SELECT * FROM pedido_detalle 
+JOIN pedido ON pedido_detalle.pedido_id = pedido.id AND pedido_detalle.cliente_id = pedido.cliente_id;

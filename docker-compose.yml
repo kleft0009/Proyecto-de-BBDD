@@ -1,5 +1,6 @@
+
 services:
-  
+
   coordinator:
     image: citusdata/citus:11.2
     container_name: coordinator
@@ -7,7 +8,16 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "9000:5432"
+    networks:
+      - ecommerce_net
 
+  coordinator_backup:
+    image: citusdata/citus:11.2
+    container_name: coordinator_backup
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "9002:5432"
     networks:
       - ecommerce_net
 
@@ -43,6 +53,20 @@ services:
     networks:
       - ecommerce_net
 
+  haproxy:
+    image: haproxy:2.9
+    container_name: haproxy
+    ports:
+      - "9001:5432"
+      - "8404:8404"
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - coordinator
+      - coordinator_backup
+    networks:
+      - ecommerce_net
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
@@ -53,6 +77,7 @@ services:
       - "9005:80"
     networks:
       - ecommerce_net
+
   backend:
     container_name: backend
     image: back_end:3.9.4
@@ -60,7 +85,7 @@ services:
       - "${PORT:-3000}:3000"
     environment:
       PORT: 3000
-      DB_HOST: coordinator
+      DB_HOST: haproxy
       DB_PORT: 5432
       DB_NAME: postgres
       DB_USER: postgres
@@ -68,19 +93,25 @@ services:
       DB_SCHEMA: public
       DEFAULT_LIMIT: 100
       MAX_LIMIT: 1000
+    depends_on:
+      - haproxy
     networks:
       - ecommerce_net
+
   frontend:
     container_name: frontend
-    image: criowl/front_mirage:2.0
+    image: front_mirage:3.5
     ports:
       - "9009:80"
     environment:
       VITE_API_URL: http://localhost:3000
+    depends_on:
+      - backend
     networks:
       - ecommerce_net
-      
+
 networks:
   ecommerce_net:
     external: true
     name: ecommerce_net
+

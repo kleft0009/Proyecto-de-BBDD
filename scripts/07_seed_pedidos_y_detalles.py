@@ -12,9 +12,9 @@ DETALLES_URL = "http://localhost:3000/pedido-detalle"
 async def send_order_and_detail(session, semaphore, index, progress_state):
     async with semaphore:
         # Generar un cliente aleatorio entre los 500,000 registrados
-        cliente_id = random.randint(1, 500000)
+        cliente_id = random.randint(1, 250000)
         # Generar un empleado aleatorio entre los 500,000 registrados
-        empleado_id = random.randint(1, 500000)
+        empleado_id = random.randint(1, 25000)
         
         forma_pago = random.choice(["Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito", "Transferencia Bancaria"])
         
